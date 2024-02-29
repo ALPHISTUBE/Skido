@@ -13,6 +13,13 @@
         android:theme="@style/Base.Theme.Skido"
         tools:targetApi="31">
         <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Navigation"
+            android:exported="false"
+            android:label="@string/title_activity_navigation" />
+        <activity
             android:name=".SignUpPage"
             android:exported="false" />
         <activity

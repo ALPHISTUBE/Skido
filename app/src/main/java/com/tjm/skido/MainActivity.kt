@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         Handler(Looper.getMainLooper()).postDelayed({
-            startActivity(Intent(this, SignUpPage::class.java))
+            startActivity(Intent(this@MainActivity, SignUpPage::class.java))
             finish()
         }, 1500)
 

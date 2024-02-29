@@ -1,7 +1,11 @@
 package com.tjm.skido
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.text.Html
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.firebase.auth.FirebaseAuth
@@ -21,13 +25,13 @@ class SignUpPage : AppCompatActivity() {
     }
 
     val userInfo = UserInfo()
-    private val launcher = registerForActivityResult(ActivityResultContracts.GetContent()){
-        uri ->
-        uri?.let{
-            UploadImage(uri, USER_PROFILE_FOLDER){
-                if (it == null){
-                }else{
+    private val launcher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let {
+            UploadImage(uri, USER_PROFILE_FOLDER) {
+                if (it == null) {
+                } else {
                     userInfo.image = it
+                    binding.profileImage.setImageURI(uri)
                 }
             }
         }
@@ -37,9 +41,18 @@ class SignUpPage : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        binding.plus.setOnClickListener{
+        binding.plus.setOnClickListener {
             launcher.launch("image/*")
         }
+
+
+        val loginText = "<font color=#000000>Already have an account </font><font color=#1E88E5>Login </font><font color=#fff>?</font>"
+        binding.login.setText(Html.fromHtml(loginText));
+        binding.login.setOnClickListener {
+            startActivity(Intent(this@SignUpPage, LoginActivity::class.java))
+            finish()
+        }
+
         binding.SignUpButton.setOnClickListener {
             if ((binding.name.editText?.text.toString() == "") or (binding.email.editText?.text.toString() == "") or (binding.password.editText?.text.toString() == "")) {
                 Toast.makeText(
@@ -50,15 +63,17 @@ class SignUpPage : AppCompatActivity() {
             } else {
                 FirebaseAuth.getInstance().createUserWithEmailAndPassword(
                     binding.email.editText?.text.toString(),
-                    binding.email.editText?.text.toString()
+                    binding.password.editText?.text.toString()
                 ).addOnCompleteListener { result ->
                     if (result.isSuccessful) {
                         userInfo.name = binding.name.editText?.text.toString()
                         userInfo.email = binding.email.editText?.text.toString()
                         userInfo.password = binding.password.editText?.text.toString()
                         Firebase.firestore.collection(USER_NODE)
-                            .document(Firebase.auth.currentUser!!.uid).set(userInfo).addOnSuccessListener {
-                                Toast.makeText(this@SignUpPage, "File saved", Toast.LENGTH_SHORT).show()
+                            .document(Firebase.auth.currentUser!!.uid).set(userInfo)
+                            .addOnSuccessListener {
+                                startActivity(Intent(this@SignUpPage, Navigation::class.java))
+                                finish()
                             }
                     }
                 }
