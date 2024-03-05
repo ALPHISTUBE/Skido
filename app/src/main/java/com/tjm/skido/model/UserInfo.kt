@@ -5,6 +5,7 @@ class UserInfo {
     var name:String?=null
     var email:String?=null
     var password:String?=null
+    var bio:String?=null
 
     constructor(image: String?, name: String?, email: String?, password: String?) {
         this.image = image
@@ -18,6 +19,12 @@ class UserInfo {
         this.email = email
         this.password = password
     }
-
     constructor()
+
+    constructor(email: String?, password: String?) {
+        this.email = email
+        this.password = password
+    }
+
+
 }

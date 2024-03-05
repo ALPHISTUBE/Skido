@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.tjm.skido.databinding.ActivityLoginBinding
+import com.tjm.skido.model.UserInfo
 
 class LoginActivity : AppCompatActivity() {
 
@@ -18,7 +19,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.createAccountButton.setOnClickListener {
-            startActivity(Intent(this@LoginActivity, SignUpPage::class.java))
+            startActivity(Intent(this@LoginActivity, SignUpActivity::class.java))
             finish()
         }
 
@@ -30,13 +31,17 @@ class LoginActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
-                FirebaseAuth.getInstance().signInWithEmailAndPassword(
+
+                val userInfo = UserInfo(
                     binding.email.editText?.text.toString(),
                     binding.password.editText?.text.toString()
-                ).addOnCompleteListener {
-                    result ->
-                    if(result.isSuccessful){
-                        startActivity(Intent(this@LoginActivity, Navigation::class.java))
+                )
+
+                FirebaseAuth.getInstance().signInWithEmailAndPassword(
+                    userInfo.email!!, userInfo.password!!
+                ).addOnCompleteListener { result ->
+                    if (result.isSuccessful) {
+                        startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
                         finish()
                     }
                 }
